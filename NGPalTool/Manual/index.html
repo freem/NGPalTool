@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>NGPalTool Manual</title>
+<link rel="stylesheet" type="text/css" href="manual.css" />
+</head>
+<body>
+<div id="header">
+<h1 class="centered">NGPalTool</h1>
+<p class="centered">Program Manual for v1.0.0.0<br/>Written by freem</p>
+<p class="centered">
+<a href="https://ajworld.net/neogeodev/">https://ajworld.net/neogeodev/</a><br />
+<a href="https://github.com/freem/NGPalTool/">https://github.com/freem/NGPalTool/</a>
+</p>
+</div>
+
+<h2>Table of Contents</h2>
+<ol>
+<li><a href="#intro">Introduction</a></li>
+<li><a href="#reqs">Requirements</a></li>
+<li><a href="#usage">Usage</a>
+<ol>
+<li><a href="#usage_file">File Menu</a></li>
+<li><a href="#usage_nav">Navigation Menu</a></li>
+<li><a href="#usage_import">Import/Export Menu</a></li>
+</ol>
+</li>
+<li><a href="#fileformat">Palette File Format Information</a>
+<ol>
+<li><a href="#fileformat_ngpal">.ngpal (NGFX)</a></li>
+<li><a href="#fileformat_neopal">.neopal (NGPalTool)</a></li>
+</ol>
+</li>
+<li><a href="#hardpal">Hardware Palette Format</a></li>
+<li><a href="#credits">Credits</a></li>
+</ol>
+
+<hr/>
+
+<h2><a name="intro">Introduction</a></h2>
+<p>NGPalTool is (as you might expect) a Neo-Geo palette tool. Since the Neo-Geo
+has a non-standard palette format, converting from RGB 0-255 values is not as
+straightforward. That's where this program comes in.</p>
+
+<hr/>
+
+<h2><a name="reqs">Requirements</a></h2>
+<p>This is a .NET Framework v4.7 Windows Forms program, so you'll possibly
+need a way to run it. On Windows, this is relatively easy. Elsewhere, not so much.
+While Mono exists, it's not guaranteed to run every Windows Forms-using program.
+However, it's worth a shot.</p>
+
+<p>Further complicating matters is the program's dynamically updating icon,
+which is likely non-portable outside of Windows. A second version without this
+functionality is also available, as <code>NGPalTool_NoIcon.exe</code>.</p>
+
+<hr/>
+
+<h2><a name="usage">Usage</h2>
+<img src="./media/interface_main.png" title="NGPalTool Main user interface"
+alt="The NGPalTool main user interface consists of a menu bar with four options:
+File, Navigation, Import/Export, and Help. The top portion of the interface
+contains navigation for palette sets and indices. Below that is a field for
+the palette set name (only used when saving in .neopal format). Under the name
+is a palette preview pane. In this screenshot, the entire palette is black.
+There are three sections below the palette preview. The left side contains
+inputs for Red, Green, and Blue (0-255), as well as a Color Picker button.
+The middle portion is a preview swatch of the current palette index.
+The right side contains the output color information. Red, green, and blue
+are given as 0-31 values, with an optional prime (') if the dark bit is set.
+The dark bit has its own check box, which cannot be modified. Finally, there
+is a Hex box with the hardware-ready palette value."/><br/>
+<p>how to use!!</p>
+
+<h3><a name="usage_file">File Menu</a></h3>
+<h4>New Palette File</h4>
+<p>Resets all 256 entries to the default values (all black).</p>
+
+<h4>Open Palette File</h4>
+<p>NGPalTool supports loading two types of palette files, dependent on the file
+extension. This is important to keep in mind, as <strong>behavior depends on
+file type</strong>.</p>
+
+<p><code>.ngpal</code> files only contain a <strong>single palette set</strong> and
+will be loaded into the <strong>current palette set</strong>.</p>
+
+<p><code>.neopal</code> files contain <strong>256 palette sets</strong>. Loading one
+will replace <strong>all active palette sets</strong> with the file contents.</p>
+
+<h4>Save Palette File</h4>
+<p>As with opening palette files, NGPalTool supports saving two file types.
+<strong>Behavior depends on file type</strong>.</p>
+
+<p>When saving in <code>.ngpal</code> format, <strong>only the current active
+palette set</strong> will be saved.</p>
+
+<p><code>.neopal</code> files will contain <strong>all 256 palette sets</strong> when saved.</p>
+
+<h3><a name="usage_nav">Navigation Menu</a></h3>
+<p>The Navigation menu is straightforward, but it also enables the use of keyboard
+shortcuts to move through the palette sets and indices.</p>
+
+<ul>
+<li><strong>Next Index</strong> &ndash; Next index in current palette set. (Keyboard shortcut: F8)</li>
+<li><strong>Previous Index</strong> &ndash; Previous index in current palette set. (Keyboard shortcut: F7)</li>
+<li><strong>Next Set</strong> &ndash; Next palette set. (Keyboard shortcut: F6)</li>
+<li><strong>Previous Set</strong> &ndash; Previous palette set. (Keyboard shortcut: F5)</li>
+</ul>
+
+<p>When using the keyboard shortcuts, the palette set and index will wrap around
+when attempting to go past the minimum or maximum value.</p>
+
+<h3><a name="usage_import">Import/Export Menu</a></h3>
+<p>NGPalTool provides some useful import/export options.</p>
+
+<h4>Import from PNG</h4>
+<p>NGPalTool allows you to import palettes from PNG files, with a few caveats.</p>
+<ul>
+<li>Non-paletted PNG files are unsupported.</li>
+<li>The recommended format is 4BPP paletted (16 colors). When importing these files,
+the <strong>current palette set</strong> will be replaced. Multiple 4BPP images
+can be converted at once.</li>
+<li>8BPP paletted (256 colors) images are also supported, but only one 8BPP image
+can be imported at a time. The <strong>first 16 palette sets</strong> will be
+replaced with the palettes from the PNG. Since color index 0 in each palette set
+is transparent, you will have to be careful with importing 256 color PNG files.</li>
+<li>Due to limitations with how .NET handles transparency in paletted PNG files,
+you can not import paletted PNG files with transparency. Working around this is a
+pain.</li>
+</ul>
+
+<h4>Export Current Set as ASM</h4>
+<p>Exports the current active palette set in assembler-ready text format.</p>
+
+<h4>Export Set Range as ASM</h4>
+<img src="./media/export_set_range.png" title="Export Set Range as ASM dialog"
+alt="The Export Set Range as ASM dialog. There are two numeric up/down controls,
+one for Range Start, and one for Range End. OK and Cancel buttons are below the
+values."/><br />
+<p>Export a range of palette sets in assembler-ready text format.</p>
+
+<hr/>
+
+<h2><a name="fileformat">Palette File Format Information</a></h2>
+<p>NGPalTool supports multiple palette file formats.</p>
+
+<h3><a name="fileformat_ngpal">.ngpal (NGFX)</a></h3>
+<p><code>.ngpal</code> is the "standard" binary format from blastar's NGFX program.
+It consists of a single palette set (16 colors) as big endian hex values,
+ready to be <code>.incbin</code>'d.</p>
+
+<h3><a name="fileformat_neopal">.neopal (NGPalTool)</a></h3>
+<p><code>.neopal</code> is a text-based format best explained with a comment
+from the source code:</p>
+<blockquote>"freem wants to store multiple named palettes in a file for some reason"</blockquote>
+<p><code>.neopal</code> files store all 256 palette sets with labels, one entry per line.
+The entry format is:</p>
+<p><code>label:color1,color2,</code>...<code>color16</code></p>
+<p>Each color (<code>color1</code>-<code>color16</code>) is stored as Neo-Geo hardware-ready
+hex values (sans any prefix, such as <code>$</code> or <code>0x</code>).
+See the <a href="#hardpal">Hardware Palette Format section</a> for more details.</p>
+<p><code>label</code> has a few character restrictions.
+The following characters cannot be a part of the palette set label:</p>
+<ul>
+<li>Space (hex value 0x20)</li>
+<li>. (period)</li>
+<li>, (comma)</li>
+<li>: (colon)</li>
+<li>; (semicolon)</li>
+<li>? (question mark)</li>
+<li>! (exclamation point)</li>
+<li>&lt; (less than)</li>
+<li>&gt; (greater than)</li>
+<li>( (open parentheses)</li>
+<li>) (close parentheses)</li>
+<li>\ (backslash)</li>
+<li>/ (forward slash)</li>
+<li>| (pipe)</li>
+<li>- (minus)</li>
+<li>+ (plus)</li>
+<li>= (equals)</li>
+<li>$ (dollar sign)</li>
+<li># (pound sign/octothorpe)</li>
+<li>% (percent sign)</li>
+<li>^ (caret)</li>
+<li>&amp; (ampersand)</li>
+<li>@ (at symbol)</li>
+<li>* (star)</li>
+</ul>
+
+<hr/>
+
+<h2><a name="hardpal">Hardware Palette Format</a></h2>
+<p>As mentioned in the introduction, the Neo-Geo's palette format is not straightforward.
+Each value is one word (two bytes), big endian.</p>
+
+<table>
+<thead>
+<tr>
+<th class="dark">F</th>
+<th class="red">E</th>
+<th class="green">D</th>
+<th class="blue">C</th>
+<th class="red">B</th>
+<th class="red">A</th>
+<th class="red">9</th>
+<th class="red">8</th>
+<th class="green">7</th>
+<th class="green">6</th>
+<th class="green">5</th>
+<th class="green">4</th>
+<th class="blue">3</th>
+<th class="blue">2</th>
+<th class="blue">1</th>
+<th class="blue">0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="centered dark">Dark</td>
+<td class="centered red">Red LSB<br/><small>bit 0</small></td>
+<td class="centered green">Green LSB<br/><small>bit 0</small></td>
+<td class="centered blue">Blue LSB<br/><small>bit 0</small></td>
+<td colspan="4" class="centered red">Red MSB<br/><small>bits 4321</small></td>
+<td colspan="4" class="centered green">Green MSB<br/><small>bits 4321</small></td>
+<td colspan="4" class="centered blue">Blue MSB<br/><small>bits 4321</small></td>
+</tr>
+</tbody>
+</table>
+
+<p>The Dark bit subtracts 1 from each color channel when non-zero.</p>
+
+<p>To obtain each color channel's value (without taking the Dark bit into account):</p>
+<ul>
+<li>Red = <code>(value&0x40)&gt;&gt;14|(value&0x0F00)&gt;&gt;7</code></li>
+<li>Green = <code>(value&0x20)&gt;&gt;13|(value&0x00F0)&gt;&gt;3</code></li>
+<li>Blue = <code>(value&0x10)&gt;&gt;12|(value&0x000F)&lt;&lt;1</code></li>
+</ul>
+
+<p>It's important to note that the colors are not exactly linear, as the Neo-Geo
+uses a resistor network to generate the colors. MAME appears to emulate this.
+NGPalTool's conversions may be off from hardware.</p>
+
+<hr/>
+
+<h2><a name="credits">Credits</a></h2>
+<ul>
+<li>Program by <a href="https://ajworld.net/">freem</a></li>
+<li>Color conversion code by <a href="http://furrtek.free.fr/">furrtek</a></li>
+<li>NGFX (and .ngpal) by <a href="https://blastar.citavia.de/">blastar</a></li>
+<li>Neo-Geo is a trademark of <a href="https://www.snk-corp.co.jp/">SNK Corporation</a></li>
+</ul>
+
+</body>
+</html>
